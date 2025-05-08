@@ -4,29 +4,29 @@ using namespace std;
 
 class student
 {
+public:	
     char name[20];
     char grade;
     float marks;
 
 public:
-    void getdata(void);
-    void display(void);
+    void getdata();
+    void display();
 };
 
-void student::getdata(void)
+void student::getdata()
 {
-    char ch;
-    cin.get(ch); // to consume leftover newline
+    cin.ignore();  // ? Flush leftover newline from previous input
     cout << "Enter the name: ";
     cin.getline(name, 20);
     cout << "Enter the grade: ";
     cin >> grade;
-    cout << "Enter the mark: ";
+    cout << "Enter the marks: ";
     cin >> marks;
     cout << "\n";
 }
 
-void student::display(void)
+void student::display()
 {
     cout << "Name: " << name << "\tGrade: " << grade << "\tMarks: " << marks << "\n";
 }
@@ -38,9 +38,9 @@ int main()
     fstream fio;
 
     cout << "Enter file name: ";
-    cin.getline(fname, 20);
+    cin.getline(fname, 20);  // ? First input is safe to use getline
 
-    fio.open(fname, ios::in | ios::out | ios::binary | ios::trunc);
+    fio.open(fname, ios::in | ios::out  | ios::trunc);
     if (!fio)
     {
         cout << "Error opening the file!\n";
@@ -51,19 +51,20 @@ int main()
     for (int i = 0; i < 3; i++)
     {
         cse[i].getdata();
-        fio.write((char *)&cse[i], sizeof(cse[i]));
+        fio << cse[i].name << " " << cse[i].grade << " " << cse[i].marks << endl;
+
     }
 
-    fio.seekg(0);
+    fio.seekg(0); // ? Rewind file to read from start
     cout << "\nThe contents of the " << fname << " file are shown below:\n";
 
     for (int i = 0; i < 3; i++)
     {
-        fio.read((char *)&cse[i], sizeof(cse[i]));
+        fio >> cse[i].name >> cse[i].grade >> cse[i].marks;
+
         cse[i].display();
     }
 
     fio.close();
     return 0;
 }
-
